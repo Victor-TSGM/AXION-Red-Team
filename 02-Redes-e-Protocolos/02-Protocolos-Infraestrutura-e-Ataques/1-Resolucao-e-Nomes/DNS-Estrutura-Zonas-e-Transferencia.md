@@ -8,67 +8,80 @@ tags:
   - domain-name
   - info-gethering
   - axfr
+  - cyber/networks
 ---
 ___
-# Domain Name System
+# DNS: Estrutura, Zonas e  Transferência (AXFR)
 
->**O que é resumidamente:** é um serviço que traduz ip (37.59.174.225) para nome mais legível (businesscorp.com.br)
-
-___
-# Registros DNS
-
-`SOA`     - Start Of Authority (Responsável pelo Dominio)
-`A`          -  Endereço IPv4
-`AAAA`   - Endereço IPv6
-`NS`        - Name Server
-`CNAME` - Canonical Name (Apelidp/Alias)
-`MX`        - Mail Exchange (Servidor de Email) 
-`PTR`      - Poiter (Mapeia IP para NOME)
-`HINFO` - Host Information
-`TXT`      - Text String (ex: spf)
+**Resumo:** Estudo do funcionamento do protocolo DNS, hierarquia de resolução de nomaes, tipos de registros e o impacto de segurança causado por falhas de configuração em transferências de zona.
 
 ___
-# Transferência de Zona
+### Hierarquia e Estrutura do DNS
 
-> **Transferência de Zona DNS** (conhecida tecnicamente pelo comando **AXFR**) é um mecanismo legítimo do protocolo DNS usado para replicar o banco de dados de mapeamento de nomes entre servidores DNS. 
-
-> *Por exemplo:* o servidor ns1 tem o banco atualizado, já o ns2 não. Então faz a transferência de zona para o ns2 para que continuem sincronizados
-
-> *OBS:* A tranferência de Zona AXFR opera na porta 53 TCP, enquanto as demais consultas funcionam na 53 UDP
+> ***Zonas DNS**: Uma zona é uma parte distinta do espaço de nomes de dominio que é delegado a uma entidade ou administrador especifico. Ela contém todos os apontamentos daquele escopo.
+>
+> **Tipos de Servidores:** 
+	* **Master (Primário):** Onde as alterações e os registros originais da zona são configurados.
+	* **Slave (Secundário):** Servidor que mantém uma cópia idêntica da zona para fins de redundância e balanceamento de carga
 
 ___
-# Utilitario Host (Linux)
+### Mecanismo AXFR (Zone Transfer)
 
-Esse utilitário server como um DNS resolver
+> **Transferência de Zona:** é o processo utilizado pelos servidores slaves para replicar o banco de dados de uma zona a partir do servidor master.
+>
+> **Risco ofensivo:** Se o servidor master permitir requisições AXFR vindas de **qualquer endereço IP** (anônimo) um atacante poderá baixar o mapa completo da infraestrutura da empresa com um único comando, ignorando a necessidade de brute-force.
 
-**Exemplos de uso:**
+___
+### Mapeamento técnico de Registros
 
-`host -t A businesscorp.com.br`
-   -t: tipo de registro, no caso é  o A, para resolver para IPv4
-`host -t mx businesscorp.com.br`
-   resolve os servidores de email do dominio informado
+>- **A / AAAA:**  Apontam o nome diretamente para endereços IPv4 / IPv6
+>
+>- **NS (Name Server):** Identifica os servidores que detêm a autoridade de resposta pelo domínio.
+>
+>- **MX (Mail Exchange):** Servidores responsáveis pelo trafego de e-mail do alvo.
+>
+>- **TXT:** Utilizado para anotações de texto livre, Crítico para a validação de políticas contra   falsificação de e-mail como **SPF (Sender Policy Framework)**
 
-**Exemplos de uso transferência de Zona AXFR** :
+___
+### SPF - Sender Policy Framework
 
-Antes de executar esse comando precisamos saber qual é o servidor de dns que está sendo utilizado, para isso usamos o comando  `ẁhois` ou simplesmente pesquisamos em algum site de coleta de informação ([whois](https://registro.br/tecnologia/ferramentas/whois/), [IANA](https://www.iana.org/whois), [Shodan](https://www.shodan.io/dashboard), [Censys](https://platform.censys.io))
+> **SPF** é basicamente identificar quais servidores estão autorizados a enviar emails em nome do seu dominio.
+>
+> **Risco ofensivo:**  Configurações de SPF malconfiguradas permite ao atacante enviar emais utilizando dominio da empresa, por exemplo @businesscorp.com.br
+> - **?all:** vunlnerável, pois permite que eu envie emais confiáveis utilizando dominio da empresa
+> - **~all:** parcialmente vulnerável, permite enviar email mas vai para caixa de span ou é fitrado
+> - **-all:** protegido, não permite que atacantes enviem emails utilizando nome de dominio do alvo
 
-`host -l businesscorp.com.br ns1.businesscorp.com.br`
-   -l serve para listar todos os hosts no dominio. usando AXFR
+
+---
+### Snippets / Referência Técnica
+
+```bash
+
+# Tentativa manual de transferência de zona
+host -l alvo.com ns1.alvo.com
+	## -l: lista todos os hosts do dominio utilizando AXFR
+dig axfr @<IP-DO-DNS-MASTER> alvo.com
+
+# Verificação detalhada de todos os servidores de nome de um domínio
+dig ns alvo.com +short
+host -t ns alvo.com 
+
+# Consulta rápida de registros TXT para validação SFP (?all, ~all, -all)
+host -t txt alvo.com
+```
+
 
 ___
 # Scripts
 
-
-___
-# Medidas de segurança
-
-Muitos atacantes podem tirar proveito do funcionamento do serviço de **Transferência de Zona DNS** para listar os hosts de um domínio, então uma medida de segurança precisa ser configurada para apenas servidores confiáveis possam fazer essa consulta
+[[dns-zone|dns-zone]]
 
 ___
 # Referências 
 
 -  [DNS, Registros e Transferência de Zona](https://www.ibm.com/br-pt/think/topics/dns-zone)
 - [Ataque de transferencia de Zona](https://gokhnayisigi.medium.com/what-is-a-dns-zone-transfer-attack-and-how-to-test-it-12bdc52da086)
-
+- [[DNS-Recon-e-Subdomain-Takeover]]
 ___
 

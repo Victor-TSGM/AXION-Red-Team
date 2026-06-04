@@ -7,16 +7,16 @@ tags:
   - domain-name
 ---
 ___
-# DNS Brute force 
+# DNS Recon Brute force 
 
 > **Idéia:** aplicar um brute force nos subdominios de um dominio
 > Aplicar conceitos vistos em [DNS Bruteforcing](DNS-Bruteforcing-para-Cloud)
 
-```
+```bash
 #!/bin/bash
 
 echo -e "\e[32m=================================================\e[1m"
-echo -e "\e[32m========== AXION SECURITY - DNS ZONE ============\e[1m"
+echo -e "\e[32m========== AXION SECURITY - DNS RECON ============\e[1m"
 echo -e "\e[32m=================================================\e[1m"
 
 if [ $1 == " " ]; then
