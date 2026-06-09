@@ -53,6 +53,25 @@ O Firewall monitora o trafego através de *Tables* e *Chains* (Cadeia)
 ```bash
 
 ###### iptables : ip6tables TOP FLAGS ######
+-A <chain> # Append - Para adicionar uma regra
+-D <chain> # Delete - Para remover uma regra
+-L # List - lista todos os chains e regras
+-F <chain> # Remove todas as regras configuradas, se não passar tabela ou chain, zera
+-Z <chain> # Zero - Limpa dados de uma regra especifica, limpa log de bites trafegados
+
+-t <table> # Table para manipular - padrão filter
+-j <ACTION> # Jump - informar a açao desejada ACCEPT DROP REJECT
+-p (tcp || udp || arp || icmp)# Protocol - para informar protocolo utilizado, tcp, icmo, arp...
+-s <ip> # Source - informa ip host de origem
+-d <ip> # Destination - informa ip de destino
+--dport # DestPort - informa a porta de destino
+--sport # SrcPort - informa porta de origem 
+
+#====== Stateful =====
+-m conntrack --ctstate NEW
+
+#====== Ver quanto de bytes esta sendo consumido ====
+iptables -vnL
 
 
 ```
