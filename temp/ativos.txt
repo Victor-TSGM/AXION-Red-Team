@@ -1,0 +1,9 @@
+# Nmap 7.98 scan initiated Tue Jun  9 19:23:45 2026 as: /usr/lib/nmap/nmap --privileged -sn -oG ativos.txt 192.168.1.0/24
+Host: 192.168.1.1 ()	Status: Up
+Host: 192.168.1.18 ()	Status: Up
+Host: 192.168.1.20 ()	Status: Up
+Host: 192.168.1.100 ()	Status: Up
+Host: 192.168.1.250 ()	Status: Up
+Host: 192.168.1.254 ()	Status: Up
+Host: 192.168.1.22 ()	Status: Up
+# Nmap done at Tue Jun  9 19:23:48 2026 -- 256 IP addresses (7 hosts up) scanned in 3.14 seconds
