@@ -41,6 +41,10 @@ Para escanear portas TCP de um host é feito o processo de **Three-Way-Handshake
 -p    # Ports - para informar portas a serem varridas
 -p-   # Todas as portas 1 - 65535
 -Pn   # Não verificar se o host está ativo, quando ja sabemos que está
+-iL   # input from list - Utilizar arquivo com lista de hosts
+-o    # Output - Jogar saida para um arquivo
+-oG   # Output Grepable - jogar saida grepable para arquivo
+--open # Trazer somente portas abertas
 
 
 # ========= Exemplos de uso ========
@@ -48,8 +52,10 @@ nmap -sS -Pn 192.168.1.13 # Vai fazer scan nas 1000 principais portas
 nmap -sS -p 80 -Pn 192.168.1.13 # SYN scan para porta 80
 nmap -sS -p 21,22,80,143 -Pn 192.168.1.13 # SYN Scan para as portas informadas
 
+nmap -sUV -p 10-100 192.168.1.13 # Vai varrer portas UDP e interagir com serviço
 
-# Sy
+nmap -sn -
+
 ```
 
 ### Tipos de Scan
@@ -77,6 +83,9 @@ Para solucionar esse problema podemos usar o nmap de forma que ele vai tentar in
 
 nmap -sUV -p 60 -Pn 192.168.1.22
 ```
+
+
+
 
 
 # Referências
